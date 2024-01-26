@@ -25,7 +25,8 @@ const serviceAccount = require("./credentials.json");
 // });
 
 initializeApp({
-    credential: cert(serviceAccount)
+    credential: cert(serviceAccount),
+    databaseURL: "https://pet-project-1-learnlingo-21c4c-default-rtdb.firebaseio.com"
 });
 
 const fireDb = getFirestore();
