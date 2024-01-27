@@ -3,7 +3,7 @@ const { ctrlWrapper } = require('../utils/ctrlWrapper');
 const { fireDb } = require('../firebase');
 
 const getTeachersList = async (req, res) => {
-
+    
 }
 
 module.exports = {
