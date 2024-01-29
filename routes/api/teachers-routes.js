@@ -6,3 +6,5 @@ const {
 const router = express.Router();
 
 router.get('/teachers', getTeachersList);
+
+module.exports = router;
