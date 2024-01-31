@@ -1,34 +1,44 @@
-const {initializeApp, cert} = require('firebase-admin/app');
-const {getFirestore} = require('firebase-admin/firestore');
-// const admin = require("firebase-admin");
-const { serviceAccount } = require("./credentials");
+const { initializeApp } = require('firebase/app');
+const { getDatabase } = require('firebase/database');
+// const {initializeApp, cert} = require('firebase-admin/app');
+// const { getDatabase } = require('firebase-admin/database');
+const {
+    API_KEY,
+    AUTH_DOMAIN,
+    DATABASE_URL,
+    PROJECT_ID,
+    STORAGE_BUCKET,
+    MESSAGING_SENDER_ID,
+    APP_ID,
+    MEASUREMENT_ID,
+} = process.env
 
-// const serviceAccount = "";
-// const firebaseConfig = {
-//     apiKey: "AIzaSyBISxAP7xjjd1Jfw9seOevkIEvQ-PROauI",
-//     authDomain: "pet-project-1-learnlingo-21c4c.firebaseapp.com",
-//     databaseURL: "https://pet-project-1-learnlingo-21c4c-default-rtdb.firebaseio.com",
-//     projectId: "pet-project-1-learnlingo-21c4c",
-//     storageBucket: "pet-project-1-learnlingo-21c4c.appspot.com",
-//     messagingSenderId: "925544374892",
-//     appId: "1:925544374892:web:ddb296f7082d0b413c2e49",
-//     measurementId: "G-LZ9RLMS0Y4"
-// };
+const firebaseConfig = {
+    apiKey: API_KEY,
+    authDomain: AUTH_DOMAIN,
+    databaseURL: DATABASE_URL,
+    projectId: PROJECT_ID,
+    storageBucket: STORAGE_BUCKET,
+    messagingSenderId: MESSAGING_SENDER_ID,
+    appId: APP_ID,
+    measurementId: MEASUREMENT_ID
+};
 
-// var admin = require("firebase-admin");
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-// var serviceAccount = require("path/to/serviceAccountKey.json");
+module.exports = {
+    db,
+    app
+}
+// // const admin = require("firebase-admin");
+// const { serviceAccount } = require("./credentials");
 
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: "https://pet-project-1-learnlingo-21c4c-default-rtdb.firebaseio.com"
+// let app = initializeApp({
+//     credential: cert(serviceAccount),
+//     databaseURL: "https://pet-project-1-learnlingo-21c4c-default-rtdb.firebaseio.com"
 // });
 
-initializeApp({
-    credential: cert(serviceAccount),
-    databaseURL: "https://pet-project-1-learnlingo-21c4c-default-rtdb.firebaseio.com"
-});
+// const fireDb = getDatabase(app);
 
-const fireDb = getFirestore();
-
-module.exports = { fireDb };
+// module.exports = { fireDb };
