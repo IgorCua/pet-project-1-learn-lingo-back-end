@@ -18,7 +18,7 @@ const register = async (req, res) => {
         .get()
     console.log(user.val())
     
-    if(user.val() !== null) throw HttpError(409, 'Email is already in use');
+    if(user.val()) throw HttpError(409, 'Email is already in use');
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
