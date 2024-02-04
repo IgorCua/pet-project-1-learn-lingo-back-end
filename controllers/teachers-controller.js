@@ -11,10 +11,6 @@ const { ctrlWrapper } = require('../utils/index');
 //   query
 // } = require('firebase/database');
 
-const {
-  getDatabase
-} = require('firebase-admin/database');
-
 const { fireDb } = require('../firebase');
 // const { db, app } = require('../firebase');
 
