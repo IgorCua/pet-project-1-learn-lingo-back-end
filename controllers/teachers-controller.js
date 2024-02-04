@@ -1,5 +1,5 @@
 const { HttpError } = require('../helpers/index');
-const ctrlWrapper = require('../utils/ctrlWrapper');
+const { ctrlWrapper } = require('../utils/index');
 // const { 
 //   ref, 
 //   get, 
@@ -37,6 +37,7 @@ const getTeachersList = async (req, res) => {
         .then((snapshot) => {
       
         console.log(snapshot.val());
+        
         return snapshot.val();
     }).catch((error) => {
       console.log(error);
