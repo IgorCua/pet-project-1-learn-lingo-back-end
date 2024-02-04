@@ -28,9 +28,16 @@ const { fireDb } = require('../firebase');
 const getTeachersList = async (req, res) => {
     // const teachersRef = ref(db, '/users');
     // const teachersList = ref(fireDb, '/teachers')
-    const doc = await fireDb.ref('/users').orderByKey().startAt('-NobcoVECbDgSVya_YoG').get().then((snapshot) => {
-      console.log(snapshot.val());
-      return snapshot.val();
+    const doc = await fireDb
+        .ref('/teachers')
+        .orderByKey()
+        .startAt('-NoIE4Slkr9NCsw2CbRH')
+        .limitToFirst(4)
+        .get()
+        .then((snapshot) => {
+      
+        console.log(snapshot.val());
+        return snapshot.val();
     }).catch((error) => {
       console.log(error);
     });
