@@ -87,7 +87,9 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     const { id } = req.body;
-    
+    // console.log(req)
+    console.log(req.body)
+    console.log(req.headers)
     await fireDb
         .ref('/users')
         .child(id)
