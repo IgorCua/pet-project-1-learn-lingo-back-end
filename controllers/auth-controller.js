@@ -56,11 +56,6 @@ const login = async (req, res) => {
     
     const userPassword = user[Object.keys(user)].password;
     const userID = Object.keys(user).join('');
-    // const {} = user
-    // console.log(userObj);
-    // console.log(user[Object.keys(user)].password)
-
-    // console.log(user.verify)
 
     if(!user) throw HttpError(401, 'Email or password is wrong.');
     // if(!user.verify) throw HttpError(401, 'Please verify your email to login');
@@ -73,27 +68,36 @@ const login = async (req, res) => {
         id: userID,
 
     }
-        // console.log(nanoid())
+    
     const token = jwt.sign(payload, SECRET_KEY, {expiresIn: '3h'});
 
     await fireDb
         .ref('/users')
         .child(userID)
-        // .get()
-        // .then((snapshot) => {
-        //     console.log(snapshot.val())
-        // })
         .update({token: token})
 
     res.json({
         token,
         user: {
+            id: userID,
             email: email,
         }
     });
 }
 
+const logout = async (req, res) => {
+    const { id } = req.body;
+    
+    await fireDb
+        .ref('/users')
+        .child(id)
+        .update({token: ''})
+
+    res.status(204).json();
+}
+
 module.exports = {
     register: ctrlWrapper(register),
-    login: ctrlWrapper(login)
+    login: ctrlWrapper(login),
+    logout: ctrlWrapper(logout)
 }
