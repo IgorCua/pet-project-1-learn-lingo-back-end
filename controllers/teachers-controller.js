@@ -38,6 +38,7 @@ const getTeachersList = async (req, res) => {
     }).catch((error) => {
       console.log(error);
     });
+    
     // const teachersList = await get(child(teachersRef, '/users')).then((snapshot) => {      
     // const teachersList = await get(teachersRef).then((snapshot) => {      
     //   return snapshot.val();  
