@@ -35,7 +35,10 @@ const register = async (req, res) => {
     )
 
     res.status(201).json({
-        user: email,
+        user: {
+            name: name,
+            email: email,
+        },
         message: 'user created'
     })
 }
@@ -55,13 +58,13 @@ const login = async (req, res) => {
             console.log(error)
         })
     
-    const userPassword = user[Object.keys(user)].password;
+    const userObj = user[Object.keys(user)];
     const userID = Object.keys(user).join('');
 
     if(!user) throw HttpError(401, 'Email or password is wrong.');
     // if(!user.verify) throw HttpError(401, 'Please verify your email to login');
     
-    const passwordCompareResult = await bcrypt.compare(password, userPassword);
+    const passwordCompareResult = await bcrypt.compare(password, userObj.password);
 
     if(!passwordCompareResult) throw HttpError(401, 'Email or password is wrong');
 
@@ -80,7 +83,8 @@ const login = async (req, res) => {
         token,
         user: {
             id: userID,
-            email: email,
+            name: userObj.name,
+            email: userObj.email,
         }
     });
 }
