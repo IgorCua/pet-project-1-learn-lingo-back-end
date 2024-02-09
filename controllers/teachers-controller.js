@@ -14,41 +14,33 @@ const { ctrlWrapper } = require('../utils/index');
 const { fireDb } = require('../firebase');
 // const { db, app } = require('../firebase');
 
-// FirebaseDatabase.getInstance(firebaseApp)
-//     .getReference("resources")
-//     .child(FSeason.key)
-//     .orderByKey()
-//     .startAt(id)
-//     .limit(size)
-
 const getTeachersList = async (req, res) => {
-    // const teachersRef = ref(db, '/users');
-    // const teachersList = ref(fireDb, '/teachers')
+    const { id } = req.body;
+    const paginationStart = (id.length !== 0) ? id : '-NoIE4Slkr9NCsw2CbRH';
+
+    console.log();
+
     const doc = await fireDb
         .ref('/teachers')
         .orderByKey()
-        .startAt('-NoIE4Slkr9NCsw2CbRH')
-        .limitToFirst(4)
+        .startAt(paginationStart)
+        .limitToFirst(5)
         .get()
         .then((snapshot) => {
-      
-        console.log(snapshot.val());
-        
-        return snapshot.val();
-    }).catch((error) => {
-      console.log(error);
-    });
-    
-    // const teachersList = await get(child(teachersRef, '/users')).then((snapshot) => {      
-    // const teachersList = await get(teachersRef).then((snapshot) => {      
-    //   return snapshot.val();  
-    // }).catch((error) => {
-    //   if (!snapshot.exists()) HttpError(404);
+            const keysArr = Object.keys(snapshot.val());
+            let obj = snapshot.val();
 
-    //   return error;
-    // });
-    // console.log(doc)
-    // res.status(200).send(teachersList);
+            // deleting last object to save it id under id key for pagination
+            delete obj[keysArr[keysArr.length - 1]];
+            obj.id = keysArr[keysArr.length - 1];
+
+            // console.log(obj);
+            return obj;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    
     res.status(200).send(doc);
 }
 

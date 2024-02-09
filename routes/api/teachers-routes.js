@@ -6,5 +6,6 @@ const {
 const router = express.Router();
 
 router.get('/teachers', getTeachersList);
+router.get('/filter',);
 
 module.exports = router;

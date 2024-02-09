@@ -1,3 +1,4 @@
+//
 const { HttpError } = require('../helpers/index');
 const { ctrlWrapper } = require('../utils/index');
 const { fireDb } = require('../firebase');
@@ -66,15 +67,14 @@ const login = async (req, res) => {
 
     const payload = {
         id: userID,
-
     }
     
     const token = jwt.sign(payload, SECRET_KEY, {expiresIn: '3h'});
 
-    await fireDb
-        .ref('/users')
-        .child(userID)
-        .update({token: token})
+    // await fireDb
+    //     .ref('/users')
+    //     .child(userID)
+    //     .update({token: token})
 
     res.json({
         token,
