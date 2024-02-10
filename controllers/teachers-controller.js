@@ -32,10 +32,10 @@ const getTeachersList = async (req, res) => {
 
             // deleting last object to save it id under id key for pagination
             delete obj[keysArr[keysArr.length - 1]];
-            obj.id = keysArr[keysArr.length - 1];
+            // obj.id = keysArr[keysArr.length - 1];
 
             // console.log(obj);
-            return obj;
+            return {list: obj, id : keysArr[keysArr.length - 1]};
         })
         .catch((error) => {
             console.log(error);
