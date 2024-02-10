@@ -15,10 +15,11 @@ const { fireDb } = require('../firebase');
 // const { db, app } = require('../firebase');
 
 const getTeachersList = async (req, res) => {
-    const { id } = req.body;
+    const { id } = req.query;
+    // console.log("REQ", req.query);
     const paginationStart = (id.length !== 0) ? id : '-NoIE4Slkr9NCsw2CbRH';
 
-    console.log();
+    console.log("REQ", req.body);
 
     const doc = await fireDb
         .ref('/teachers')
@@ -41,6 +42,11 @@ const getTeachersList = async (req, res) => {
             console.log(error);
         });
     
+    // const id = doc.id;
+    
+    // console.log(id);
+    
+    // const paginationStart = (id.length !== 0) ? id : '-NoIE4Slkr9NCsw2CbRH';
     res.status(200).send(doc);
 }
 
