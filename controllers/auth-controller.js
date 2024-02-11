@@ -99,7 +99,7 @@ const logout = async (req, res) => {
     //     .child(id)
     //     .update({token: ''})
 
-    res.status(204).json({userToken: ''});
+    res.status(204).json({token: null});
 }
 
 module.exports = {
