@@ -30,7 +30,6 @@ const register = async (req, res) => {
             email: email.toLowerCase(),
             password: hashedPassword,
             favorites: "",
-            token: ""
         }
     )
 
@@ -70,6 +69,7 @@ const login = async (req, res) => {
 
     const payload = {
         id: userID,
+        email: userObj.email,
     }
     
     const token = jwt.sign(payload, SECRET_KEY, {expiresIn: '3h'});
@@ -99,7 +99,8 @@ const logout = async (req, res) => {
     //     .child(id)
     //     .update({token: ''})
 
-    res.status(204).json({token: null});
+    res.status(200).json({token: null});
+    // res.status(204).json({token: "null"});
 }
 
 module.exports = {
