@@ -1,5 +1,5 @@
 const { HttpError } = require('../helpers/index');
-const ctrlWrapper = require('../utils/ctrlWrapper');
+const { ctrlWrapper } = require('../utils/index');
 // const { 
 //   ref, 
 //   get, 
@@ -11,39 +11,42 @@ const ctrlWrapper = require('../utils/ctrlWrapper');
 //   query
 // } = require('firebase/database');
 
-const {
-  getDatabase
-} = require('firebase-admin/database');
-
 const { fireDb } = require('../firebase');
 // const { db, app } = require('../firebase');
 
-// FirebaseDatabase.getInstance(firebaseApp)
-//     .getReference("resources")
-//     .child(FSeason.key)
-//     .orderByKey()
-//     .startAt(id)
-//     .limit(size)
-
 const getTeachersList = async (req, res) => {
-    // const teachersRef = ref(db, '/users');
-    // const teachersList = ref(fireDb, '/teachers')
-    const doc = await fireDb.ref('/users').orderByKey().startAt('-NobcoVECbDgSVya_YoG').get().then((snapshot) => {
-      console.log(snapshot.val());
-      return snapshot.val();
-    }).catch((error) => {
-      console.log(error);
-    });
-    // const teachersList = await get(child(teachersRef, '/users')).then((snapshot) => {      
-    // const teachersList = await get(teachersRef).then((snapshot) => {      
-    //   return snapshot.val();  
-    // }).catch((error) => {
-    //   if (!snapshot.exists()) HttpError(404);
+    const { id } = req.query;
+    console.log("REQ", req.data);
+    const paginationStart = (id.length !== 0) ? id : '-NoIE4Slkr9NCsw2CbRH';
 
-    //   return error;
-    // });
-    // console.log(doc)
-    // res.status(200).send(teachersList);
+    console.log("REQ", req.body);
+
+    const doc = await fireDb
+        .ref('/teachers')
+        .orderByKey()
+        .startAt(paginationStart)
+        .limitToFirst(5)
+        .get()
+        .then((snapshot) => {
+            const keysArr = Object.keys(snapshot.val());
+            let obj = snapshot.val();
+
+            // deleting last object to save it id under id key for pagination
+            delete obj[keysArr[keysArr.length - 1]];
+            // obj.id = keysArr[keysArr.length - 1];
+
+            // console.log(obj);
+            return {list: obj, id : keysArr[keysArr.length - 1], length: keysArr.length - 1};
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    
+    // const id = doc.id;
+    
+    // console.log(id);
+    
+    // const paginationStart = (id.length !== 0) ? id : '-NoIE4Slkr9NCsw2CbRH';
     res.status(200).send(doc);
 }
 

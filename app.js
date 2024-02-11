@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const teachersRouter = require('./routes/api/teachers-routes');
+const usersRouter = require('./routes/api/auth-routes');
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 app.use('/' , teachersRouter);
+app.use('/users', usersRouter)
 
 app.use((_, res, __) => {
     res.status(404).json({
