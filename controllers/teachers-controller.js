@@ -16,7 +16,7 @@ const { fireDb } = require('../firebase');
 
 const getTeachersList = async (req, res) => {
     const { id } = req.query;
-    // console.log("REQ", req.query);
+    console.log("REQ", req.data);
     const paginationStart = (id.length !== 0) ? id : '-NoIE4Slkr9NCsw2CbRH';
 
     console.log("REQ", req.body);
@@ -36,7 +36,7 @@ const getTeachersList = async (req, res) => {
             // obj.id = keysArr[keysArr.length - 1];
 
             // console.log(obj);
-            return {list: obj, id : keysArr[keysArr.length - 1]};
+            return {list: obj, id : keysArr[keysArr.length - 1], length: keysArr.length - 1};
         })
         .catch((error) => {
             console.log(error);
