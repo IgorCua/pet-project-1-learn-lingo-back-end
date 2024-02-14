@@ -103,8 +103,50 @@ const logout = async (req, res) => {
     // res.status(204).json({token: "null"});
 }
 
+const favorites = async (req, res) => {
+    const {userID, teacherID} = req.body;
+    let userFavoritesArr;
+    let isFavorite;
+
+    const user = await fireDb
+        .ref('/users')
+        .orderByKey()
+        .equalTo(userID)
+        .get((snapshot) => {
+            return snapshot.val();
+        })
+    
+    if (!user) throw HttpError(404, 'User not found');
+
+    const userFavorites = user.val()[userID].favorites;
+    
+    if ( userFavorites.length > 0) {
+        console.log(true)
+        userFavoritesArr = userFavorites.split(',');
+        isFavorite = userFavoritesArr.every((curr) => curr === teacherID);
+    };
+    
+    if (userFavorites.length === 0) {
+        const test = await fireDb
+            .ref('/users')
+            .child(userID)
+            .update({
+                'favorites': teacherID
+            })
+
+        console.log(test);
+    }
+    // console.log(userFavoritesArr.length);
+    
+    console.log("userFavorites", userFavorites);
+    console.log("userFavoritesArr", userFavoritesArr);
+    console.log("isFavorite", isFavorite);
+    res.status(200).send(user);
+}
+
 module.exports = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
-    logout: ctrlWrapper(logout)
+    logout: ctrlWrapper(logout),
+    favorites: ctrlWrapper(favorites)
 }
