@@ -103,7 +103,7 @@ const logout = async (req, res) => {
     // res.status(204).json({token: "null"});
 }
 
-const favorites = async (req, res) => {
+const favoritesUpdateDelete = async (req, res) => {
     const {userID, teacherID} = req.body;
     let userFavoritesArr;
     let isFavorite;
@@ -120,21 +120,40 @@ const favorites = async (req, res) => {
 
     const userFavorites = user.val()[userID].favorites;
     
-    if ( userFavorites.length > 0) {
-        console.log(true)
-        userFavoritesArr = userFavorites.split(',');
-        isFavorite = userFavoritesArr.every((curr) => curr === teacherID);
-    };
-    
     if (userFavorites.length === 0) {
-        const test = await fireDb
+        await fireDb
             .ref('/users')
             .child(userID)
             .update({
                 'favorites': teacherID
             })
+    }
 
-        console.log(test);
+    if ( userFavorites.length > 0) {
+        console.log(true)
+        userFavoritesArr = userFavorites.split(', ');
+        isFavorite = userFavoritesArr.find((curr) => curr === teacherID);
+    };
+    
+    if(!isFavorite) {
+        userFavoritesArr.push(teacherID);
+        await fireDb
+            .ref('/users')
+            .child(userID)
+            .update({
+                'favorites': userFavoritesArr.join(', ')
+            })
+    }
+
+    if(isFavorite) {
+        userFavoritesArr.splice(userFavoritesArr.indexOf(teacherID), 1);
+        
+        await fireDb
+            .ref('/users')
+            .child(userID)
+            .update({
+                'favorites': userFavoritesArr.join(', ')
+            })
     }
     // console.log(userFavoritesArr.length);
     
@@ -148,5 +167,5 @@ module.exports = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
     logout: ctrlWrapper(logout),
-    favorites: ctrlWrapper(favorites)
+    favoritesUpdateDelete: ctrlWrapper(favoritesUpdateDelete)
 }

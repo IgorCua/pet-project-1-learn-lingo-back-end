@@ -3,7 +3,7 @@ const {
     register,
     login,
     logout,
-    favorites
+    favoritesUpdateDelete
 } = require('../../controllers/auth-controller');
 const { userRegisterSchema, userLoginSchema } = require('../../schemas/index');
 const { validateBody } = require('../../utils');
@@ -15,6 +15,6 @@ const router = express.Router();
 router.post('/register', validateBody(userRegisterSchema), register);
 router.post('/login', validateBody(userLoginSchema), login);
 router.post('/logout', authenticate, logout);
-router.post('/favorites', favorites);
+router.post('/favorites', favoritesUpdateDelete);
 
 module.exports = router;
