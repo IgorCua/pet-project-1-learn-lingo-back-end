@@ -50,6 +50,9 @@ const getTeachersList = async (req, res) => {
     res.status(200).send(doc);
 }
 
+const filter = (req, res) => {
+    
+}
 
 module.exports = {
     getTeachersList: ctrlWrapper(getTeachersList)
