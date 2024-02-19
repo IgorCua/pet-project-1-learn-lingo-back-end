@@ -104,10 +104,7 @@ const logout = async (req, res) => {
 }
 
 const favorites = async (req, res) => {
-    // const favoritesArr = req.body.favorites;
-    const { id, favorites } = req.body;
-    // console.log("ID", id)
-    const favoritesArr = favorites.split(',');
+    const { id } = req.body;
     let resObj = {};
 
     const userFavorites = await fireDb
@@ -119,8 +116,7 @@ const favorites = async (req, res) => {
             return snapshot.val()[id].favorites;
         })
    
-    await Promise.all(favoritesArr.map( async (id) => {
-        // return await fireDb
+    await Promise.all(userFavorites.split(', ').map( async (id) => {
         const teacher = await fireDb
             .ref('/teachers')
             .orderByKey()
@@ -133,9 +129,6 @@ const favorites = async (req, res) => {
         resObj[id] = teacher;
     }))
 
-    // for async ()
-    // console.log('RES_ARR', resArr);
-    // console.log('RES_OBJ', resObj);
     res.status(200).send(resObj);
 }
 
