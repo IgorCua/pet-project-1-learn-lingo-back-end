@@ -5,12 +5,10 @@ const { fireDb } = require('../firebase');
 
 const getTeachersList = async (req, res) => {
     const { id } = req.query;
-    console.log("REQ", req.data);
-    const paginationStart = (id.length !== 0) ? id : '-NoIE4Slkr9NCsw2CbRH';
+    // console.log("REQ", req.query);
+    const paginationStart = (id && id.length !== 0) ? id : '-NoIE4Slkr9NCsw2CbRH';
 
-    console.log("REQ", req.body);
-
-    const doc = await fireDb
+    const teachersList = await fireDb
         .ref('/teachers')
         .orderByKey()
         .startAt(paginationStart)
@@ -29,16 +27,17 @@ const getTeachersList = async (req, res) => {
             console.log(error);
         });
     
-    res.status(200).send(doc);
+    res.status(200).send(teachersList);
 }
 
 const filter = async (req, res) => {
+    // console.log(req.query)
     const teachersList = await fireDb
         .ref('/teachers')
         .orderByKey()
         .get()
         .then((snapshot) => {
-            return filterTeachers(req.body, snapshot.val());
+            return filterTeachers(req.query, snapshot.val());
         })
     res.status(200).send(teachersList);
 }
