@@ -1,4 +1,4 @@
-const { HttpError } = require('../helpers/index');
+const { HttpError, filterTeachers } = require('../helpers/index');
 const { ctrlWrapper } = require('../utils/index');
 // const { 
 //   ref, 
@@ -50,10 +50,26 @@ const getTeachersList = async (req, res) => {
     res.status(200).send(doc);
 }
 
-const filter = (req, res) => {
-    
+const filter = async (req, res) => {
+    const { languages, level, price } = req.body;
+    // console.log(req.body);
+    // .ref('/users')
+    // .orderByChild('email')
+    // .equalTo(email.toLowerCase())
+    // .get()
+    const teachersList = await fireDb
+        .ref('/teachers')
+        .orderByKey()
+        .get()
+        .then((snapshot) => {
+            return filterTeachers(req.body, snapshot.val());
+            // return snapshot.val();
+        })
+    // console.log("teachersList", teachersList.val())
+    res.status(200).send(teachersList);
 }
 
 module.exports = {
-    getTeachersList: ctrlWrapper(getTeachersList)
+    getTeachersList: ctrlWrapper(getTeachersList),
+    filter: ctrlWrapper(filter)
 }
