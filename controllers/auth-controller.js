@@ -51,6 +51,7 @@ const login = async (req, res) => {
         .equalTo(email.toLowerCase())
         .get()
         .then((snapshot) => {
+            console.log("USER", snapshot.val())
             return snapshot.val();
         })
         .catch((error) => {
@@ -85,6 +86,7 @@ const login = async (req, res) => {
             id: userID,
             name: userObj.name,
             email: userObj.email,
+            favorites: userObj.favorites
         }
     });
 }
@@ -104,7 +106,10 @@ const logout = async (req, res) => {
 }
 
 const favorites = async (req, res) => {
-    const { id } = req.body;
+    const { id } = req.query;
+    // console.log("body", req.body)
+    // console.log("query", req.query)
+    // console.log("params", req.params)
     let resObj = {};
 
     const userFavorites = await fireDb
@@ -116,20 +121,57 @@ const favorites = async (req, res) => {
             return snapshot.val()[id].favorites;
         })
    
-    await Promise.all(userFavorites.split(', ').map( async (id) => {
-        const teacher = await fireDb
-            .ref('/teachers')
-            .orderByKey()
-            .equalTo(id.trim())
-            .once('value')
-            .then((snapshot) => {
-                return snapshot.val()[id];
-            })  
+    // await Promise.all(userFavorites.split(', ').map( async (id) => {
+    //     const teacher = await fireDb
+    //         .ref('/teachers')
+    //         .orderByKey()
+    //         .equalTo(id.trim())
+    //         .once('value')
+    //         .then((snapshot) => {
+    //             return snapshot.val()[id];
+    //         })  
             
-        resObj[id] = teacher;
-    }))
-
-    res.status(200).send(resObj);
+    //     resObj[id] = teacher;
+    // }))
+    const responce = {"-NoIE4Slkr9NCsw2CbRH": {
+        "avatar_url": "https://ftp.goit.study/img/avatars/1.jpg",
+        "conditions": [
+            "Teaches only adult learners (18 years and above).",
+            "Flexible scheduling options available."
+        ],
+        "experience": "John has been teaching languages for 7 years and has extensive experience in helping students improve their language skills. He has successfully taught numerous students from different backgrounds and proficiency levels.",
+        "languages": [
+            "English",
+            "Spanish"
+        ],
+        "lesson_info": "The lessons focus on improving speaking and listening skills through interactive activities and discussions.",
+        "lessons_done": 1375,
+        "levels": [
+            "A1 Beginner",
+            "A2 Elementary",
+            "B1 Intermediate",
+            "B2 Upper-Intermediate",
+            "C1 Advanced",
+            "C2 Proficient"
+        ],
+        "name": "John",
+        "price_per_hour": 25,
+        "rating": 4.5,
+        "reviews": [
+            {
+                "comment": "John is an excellent teacher! I highly recommend him.",
+                "reviewer_name": "Alice",
+                "reviewer_rating": 5
+            },
+            {
+                "comment": "John is very knowledgeable and patient. I enjoyed his classes.",
+                "reviewer_name": "Bob",
+                "reviewer_rating": 4
+            }
+        ],
+        "surname": "Doe"
+    }}
+    res.status(200).send(responce);
 }
 
 const favoritesUpdate = async (req, res) => {
