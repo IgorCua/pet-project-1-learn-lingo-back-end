@@ -110,7 +110,7 @@ const favorites = async (req, res) => {
     // const { userID } = req.body;
     // console.log("USER_ID", userID);
     // console.log("body", req.body)
-    console.log("query", req.query)
+    // console.log("query", req.query)
     // console.log("params", req.params)
     let resObj = {};
 

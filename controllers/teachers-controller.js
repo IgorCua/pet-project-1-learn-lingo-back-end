@@ -19,7 +19,7 @@ const getTeachersList = async (req, res) => {
             let obj = snapshot.val();
 
             // deleting last object to save it id under id key for pagination
-            delete obj[keysArr[keysArr.length - 1]];
+            if(keysArr.length === 5) delete obj[keysArr[keysArr.length - 1]];
 
             return {list: obj, id : keysArr[keysArr.length - 1], length: keysArr.length - 1};
         })
