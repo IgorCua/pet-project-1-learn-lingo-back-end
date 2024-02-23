@@ -106,76 +106,80 @@ const logout = async (req, res) => {
 }
 
 const favorites = async (req, res) => {
-    const { id } = req.query;
+    const { userID } = req.query;
+    // const { userID } = req.body;
+    // console.log("USER_ID", userID);
     // console.log("body", req.body)
-    // console.log("query", req.query)
+    console.log("query", req.query)
     // console.log("params", req.params)
     let resObj = {};
 
     const userFavorites = await fireDb
         .ref('/users')
         .orderByKey()
-        .equalTo(id)
+        .equalTo(userID)
         .get()
         .then((snapshot) => {
-            return snapshot.val()[id].favorites;
+            return snapshot.val()[userID].favorites;
         })
    
-    // await Promise.all(userFavorites.split(', ').map( async (id) => {
-    //     const teacher = await fireDb
-    //         .ref('/teachers')
-    //         .orderByKey()
-    //         .equalTo(id.trim())
-    //         .once('value')
-    //         .then((snapshot) => {
-    //             return snapshot.val()[id];
-    //         })  
+    await Promise.all(userFavorites.split(', ').map( async (userID) => {
+        const teacher = await fireDb
+            .ref('/teachers')
+            .orderByKey()
+            .equalTo(userID.trim())
+            .once('value')
+            .then((snapshot) => {
+                return snapshot.val()[userID];
+            })  
             
-    //     resObj[id] = teacher;
-    // }))
-    const responce = {"-NoIE4Slkr9NCsw2CbRH": {
-        "avatar_url": "https://ftp.goit.study/img/avatars/1.jpg",
-        "conditions": [
-            "Teaches only adult learners (18 years and above).",
-            "Flexible scheduling options available."
-        ],
-        "experience": "John has been teaching languages for 7 years and has extensive experience in helping students improve their language skills. He has successfully taught numerous students from different backgrounds and proficiency levels.",
-        "languages": [
-            "English",
-            "Spanish"
-        ],
-        "lesson_info": "The lessons focus on improving speaking and listening skills through interactive activities and discussions.",
-        "lessons_done": 1375,
-        "levels": [
-            "A1 Beginner",
-            "A2 Elementary",
-            "B1 Intermediate",
-            "B2 Upper-Intermediate",
-            "C1 Advanced",
-            "C2 Proficient"
-        ],
-        "name": "John",
-        "price_per_hour": 25,
-        "rating": 4.5,
-        "reviews": [
-            {
-                "comment": "John is an excellent teacher! I highly recommend him.",
-                "reviewer_name": "Alice",
-                "reviewer_rating": 5
-            },
-            {
-                "comment": "John is very knowledgeable and patient. I enjoyed his classes.",
-                "reviewer_name": "Bob",
-                "reviewer_rating": 4
-            }
-        ],
-        "surname": "Doe"
-    }}
-    res.status(200).send(responce);
+        resObj[userID] = teacher;
+    }))
+    // const responce = {"-NoIE4Slkr9NCsw2CbRH": {
+    //     "avatar_url": "https://ftp.goit.study/img/avatars/1.jpg",
+    //     "conditions": [
+    //         "Teaches only adult learners (18 years and above).",
+    //         "Flexible scheduling options available."
+    //     ],
+    //     "experience": "John has been teaching languages for 7 years and has extensive experience in helping students improve their language skills. He has successfully taught numerous students from different backgrounds and proficiency levels.",
+    //     "languages": [
+    //         "English",
+    //         "Spanish"
+    //     ],
+    //     "lesson_info": "The lessons focus on improving speaking and listening skills through interactive activities and discussions.",
+    //     "lessons_done": 1375,
+    //     "levels": [
+    //         "A1 Beginner",
+    //         "A2 Elementary",
+    //         "B1 Intermediate",
+    //         "B2 Upper-Intermediate",
+    //         "C1 Advanced",
+    //         "C2 Proficient"
+    //     ],
+    //     "name": "John",
+    //     "price_per_hour": 25,
+    //     "rating": 4.5,
+    //     "reviews": [
+    //         {
+    //             "comment": "John is an excellent teacher! I highly recommend him.",
+    //             "reviewer_name": "Alice",
+    //             "reviewer_rating": 5
+    //         },
+    //         {
+    //             "comment": "John is very knowledgeable and patient. I enjoyed his classes.",
+    //             "reviewer_name": "Bob",
+    //             "reviewer_rating": 4
+    //         }
+    //     ],
+    //     "surname": "Doe"
+    // }}
+    // res.status(200).send(responce);
+    res.status(200).send(resObj);
 }
 
 const favoritesUpdate = async (req, res) => {
     const {userID, teacherID} = req.body;
+    // const {userID, teacherID} = req.query;
     let userFavoritesArr;
     let isFavorite;
 
