@@ -51,6 +51,7 @@ const login = async (req, res) => {
         .equalTo(email.toLowerCase())
         .get()
         .then((snapshot) => {
+            console.log("USER", snapshot.val())
             return snapshot.val();
         })
         .catch((error) => {
@@ -61,7 +62,6 @@ const login = async (req, res) => {
     const userID = Object.keys(user).join('');
 
     if(!user) throw HttpError(401, 'Email or password is wrong.');
-    // if(!user.verify) throw HttpError(401, 'Please verify your email to login');
     
     const passwordCompareResult = await bcrypt.compare(password, userObj.password);
 
@@ -74,37 +74,109 @@ const login = async (req, res) => {
     
     const token = jwt.sign(payload, SECRET_KEY, {expiresIn: '3h'});
 
-    // await fireDb
-    //     .ref('/users')
-    //     .child(userID)
-    //     .update({token: token})
-
     res.json({
         token,
         user: {
             id: userID,
             name: userObj.name,
             email: userObj.email,
+            favorites: userObj.favorites
         }
     });
 }
 
 const logout = async (req, res) => {
-    // const { id } = req.body;
-    // console.log(req)
-    console.log(req.body)
-    console.log(req.headers)
-    // await fireDb
-    //     .ref('/users')
-    //     .child(id)
-    //     .update({token: ''})
-
     res.status(200).json({token: null});
-    // res.status(204).json({token: "null"});
+}
+
+const favorites = async (req, res) => {
+    const { userID } = req.query;
+    let resObj = {};
+
+    const userFavorites = await fireDb
+        .ref('/users')
+        .orderByKey()
+        .equalTo(userID)
+        .get()
+        .then((snapshot) => {
+            return snapshot.val()[userID].favorites;
+        })
+   
+    await Promise.all(userFavorites.split(', ').map( async (userID) => {
+        const teacher = await fireDb
+            .ref('/teachers')
+            .orderByKey()
+            .equalTo(userID.trim())
+            .once('value')
+            .then((snapshot) => {
+                return snapshot.val()[userID];
+            })  
+            
+        resObj[userID] = teacher;
+    }))
+
+    res.status(200).send(resObj);
+}
+
+const favoritesUpdate = async (req, res) => {
+    const {userID, teacherID} = req.body;
+    let userFavoritesArr;
+    let isFavorite;
+
+    const user = await fireDb
+        .ref('/users')
+        .orderByKey()
+        .equalTo(userID)
+        .get((snapshot) => {
+            return snapshot.val();
+        })
+    
+    if (!user) throw HttpError(404, 'User not found');
+
+    const userFavorites = user.val()[userID].favorites;
+    
+    if (userFavorites.length === 0) {
+        await fireDb
+            .ref('/users')
+            .child(userID)
+            .update({
+                'favorites': teacherID
+            })
+    }
+
+    if ( userFavorites.length > 0) {
+        userFavoritesArr = userFavorites.split(', ');
+        isFavorite = userFavoritesArr.find((curr) => curr === teacherID);
+        
+        if(!isFavorite) {
+            userFavoritesArr.push(teacherID);
+            await fireDb
+                .ref('/users')
+                .child(userID)
+                .update({
+                    'favorites': userFavoritesArr.join(', ')
+                })
+        }
+    
+        if(isFavorite) {
+            userFavoritesArr.splice(userFavoritesArr.indexOf(teacherID), 1);
+            
+            await fireDb
+                .ref('/users')
+                .child(userID)
+                .update({
+                    'favorites': userFavoritesArr.join(', ')
+                })
+        }
+    };
+    
+    res.status(200).send(userFavoritesArr.join(', '));
 }
 
 module.exports = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
-    logout: ctrlWrapper(logout)
+    logout: ctrlWrapper(logout),
+    favorites: ctrlWrapper(favorites),
+    favoritesUpdate: ctrlWrapper(favoritesUpdate)
 }
