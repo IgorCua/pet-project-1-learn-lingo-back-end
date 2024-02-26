@@ -5,7 +5,6 @@ const { fireDb } = require('../firebase');
 
 const getTeachersList = async (req, res) => {
     const { id } = req.query;
-    // console.log("REQ", req.query);
     const paginationStart = (id && id.length !== 0) ? id : '-NoIE4Slkr9NCsw2CbRH';
 
     const teachersList = await fireDb
@@ -31,7 +30,6 @@ const getTeachersList = async (req, res) => {
 }
 
 const filter = async (req, res) => {
-    // console.log(req.query)
     const teachersList = await fireDb
         .ref('/teachers')
         .orderByKey()

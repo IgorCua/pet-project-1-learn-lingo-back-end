@@ -4,7 +4,6 @@ const validateBody = (schema) => {
     const fn = (req, _, next) => {
         const reqMethod = Object.keys(req.route.methods).join('');
 
-        // if (reqMethod === 'patch' && Object.keys(req.body).length === 0) throw HttpError(400, "Missing field favorite");
         if (Object.keys(req.body).length === 0) throw HttpError(400, "Missing fields");
 
         const { error } = schema.validate(req.body, {
@@ -18,7 +17,7 @@ const validateBody = (schema) => {
 
         if(error && Object.keys(error._original).length === 3) {
             let errArr = [];
-            console.log('original schema error ', error._original);
+            
             for(let key in error._original){
                 if(error._original[key].length === 0) errArr.push(key);
             }
@@ -27,7 +26,6 @@ const validateBody = (schema) => {
         }
 
         if (error) {
-            console.log('validateBody schema error ', error);
             throw HttpError(400, `missing required ${error.message.replaceAll('.', ',')} field`);
         }
 

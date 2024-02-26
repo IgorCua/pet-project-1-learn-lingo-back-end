@@ -62,7 +62,6 @@ const login = async (req, res) => {
     const userID = Object.keys(user).join('');
 
     if(!user) throw HttpError(401, 'Email or password is wrong.');
-    // if(!user.verify) throw HttpError(401, 'Please verify your email to login');
     
     const passwordCompareResult = await bcrypt.compare(password, userObj.password);
 
@@ -74,11 +73,6 @@ const login = async (req, res) => {
     }
     
     const token = jwt.sign(payload, SECRET_KEY, {expiresIn: '3h'});
-
-    // await fireDb
-    //     .ref('/users')
-    //     .child(userID)
-    //     .update({token: token})
 
     res.json({
         token,
@@ -92,26 +86,11 @@ const login = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-    // const { id } = req.body;
-    // console.log(req)
-    console.log(req.body)
-    console.log(req.headers)
-    // await fireDb
-    //     .ref('/users')
-    //     .child(id)
-    //     .update({token: ''})
-
     res.status(200).json({token: null});
-    // res.status(204).json({token: "null"});
 }
 
 const favorites = async (req, res) => {
     const { userID } = req.query;
-    // const { userID } = req.body;
-    // console.log("USER_ID", userID);
-    // console.log("body", req.body)
-    // console.log("query", req.query)
-    // console.log("params", req.params)
     let resObj = {};
 
     const userFavorites = await fireDb
@@ -135,51 +114,12 @@ const favorites = async (req, res) => {
             
         resObj[userID] = teacher;
     }))
-    // const responce = {"-NoIE4Slkr9NCsw2CbRH": {
-    //     "avatar_url": "https://ftp.goit.study/img/avatars/1.jpg",
-    //     "conditions": [
-    //         "Teaches only adult learners (18 years and above).",
-    //         "Flexible scheduling options available."
-    //     ],
-    //     "experience": "John has been teaching languages for 7 years and has extensive experience in helping students improve their language skills. He has successfully taught numerous students from different backgrounds and proficiency levels.",
-    //     "languages": [
-    //         "English",
-    //         "Spanish"
-    //     ],
-    //     "lesson_info": "The lessons focus on improving speaking and listening skills through interactive activities and discussions.",
-    //     "lessons_done": 1375,
-    //     "levels": [
-    //         "A1 Beginner",
-    //         "A2 Elementary",
-    //         "B1 Intermediate",
-    //         "B2 Upper-Intermediate",
-    //         "C1 Advanced",
-    //         "C2 Proficient"
-    //     ],
-    //     "name": "John",
-    //     "price_per_hour": 25,
-    //     "rating": 4.5,
-    //     "reviews": [
-    //         {
-    //             "comment": "John is an excellent teacher! I highly recommend him.",
-    //             "reviewer_name": "Alice",
-    //             "reviewer_rating": 5
-    //         },
-    //         {
-    //             "comment": "John is very knowledgeable and patient. I enjoyed his classes.",
-    //             "reviewer_name": "Bob",
-    //             "reviewer_rating": 4
-    //         }
-    //     ],
-    //     "surname": "Doe"
-    // }}
-    // res.status(200).send(responce);
+
     res.status(200).send(resObj);
 }
 
 const favoritesUpdate = async (req, res) => {
     const {userID, teacherID} = req.body;
-    // const {userID, teacherID} = req.query;
     let userFavoritesArr;
     let isFavorite;
 
