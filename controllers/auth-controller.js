@@ -57,11 +57,11 @@ const login = async (req, res) => {
         .catch((error) => {
             console.log(error)
         })
+
+    if(!user) throw HttpError(401, 'Email or password is wrong.');
     
     const userObj = user[Object.keys(user)];
     const userID = Object.keys(user).join('');
-
-    if(!user) throw HttpError(401, 'Email or password is wrong.');
     
     const passwordCompareResult = await bcrypt.compare(password, userObj.password);
 
@@ -71,7 +71,7 @@ const login = async (req, res) => {
         id: userID,
         email: userObj.email,
     }
-    
+    console.log("TEST", payload)
     const token = jwt.sign(payload, SECRET_KEY, {expiresIn: '3h'});
 
     res.json({
