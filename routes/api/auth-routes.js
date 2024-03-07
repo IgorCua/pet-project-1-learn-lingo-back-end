@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.post('/register', validateBody(userRegisterSchema), register);
 router.post('/login', validateBody(userLoginSchema), login);
-router.post('/logout', authenticate, logout);
+// router.post('/logout', authenticate, logout);
 router.get('/favorites', authenticate, favorites);
 router.post('/favorites/update-list', authenticate, favoritesUpdate);
 
