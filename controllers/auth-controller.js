@@ -65,7 +65,7 @@ const login = async (req, res) => {
     
     const passwordCompareResult = await bcrypt.compare(password, userObj.password);
 
-    if(!passwordCompareResult) throw HttpError(401, 'Email or password is wrong');
+    if(!passwordCompareResult) throw HttpError(401, 'Email or password is wrong.');
 
     const payload = {
         id: userID,
@@ -85,9 +85,9 @@ const login = async (req, res) => {
     });
 }
 
-const logout = async (req, res) => {
-    res.status(200).json({token: null});
-}
+// const logout = async (req, res) => {
+//     res.status(200).json({token: null});
+// }
 
 const favorites = async (req, res) => {
     const { userID } = req.query;
@@ -176,7 +176,7 @@ const favoritesUpdate = async (req, res) => {
 module.exports = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
-    logout: ctrlWrapper(logout),
+    // logout: ctrlWrapper(logout),
     favorites: ctrlWrapper(favorites),
     favoritesUpdate: ctrlWrapper(favoritesUpdate)
 }
