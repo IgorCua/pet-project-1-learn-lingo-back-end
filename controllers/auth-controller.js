@@ -58,20 +58,20 @@ const login = async (req, res) => {
             console.log(error)
         })
 
-    if(!user) throw HttpError(401, 'Email or password is wrong.');
+    if(!user) throw HttpError(400, 'Email or password is wrong.');
     
     const userObj = user[Object.keys(user)];
     const userID = Object.keys(user).join('');
     
     const passwordCompareResult = await bcrypt.compare(password, userObj.password);
 
-    if(!passwordCompareResult) throw HttpError(401, 'Email or password is wrong.');
+    if(!passwordCompareResult) throw HttpError(400, 'Email or password is wrong.');
 
     const payload = {
         id: userID,
         email: userObj.email,
     }
-    console.log("TEST", payload)
+
     const token = jwt.sign(payload, SECRET_KEY, {expiresIn: '3h'});
 
     res.json({
