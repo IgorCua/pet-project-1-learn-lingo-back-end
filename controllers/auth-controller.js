@@ -7,10 +7,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { SECRET_KEY } = process.env;
 
-const {
-  getDatabase
-} = require('firebase-admin/database');
-
 const register = async (req, res) => {
     const { name, email, password } = req.body;
     
@@ -51,7 +47,6 @@ const login = async (req, res) => {
         .equalTo(email.toLowerCase())
         .get()
         .then((snapshot) => {
-            console.log("USER", snapshot.val())
             return snapshot.val();
         })
         .catch((error) => {
@@ -73,7 +68,7 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(payload, SECRET_KEY, {expiresIn: '3h'});
-
+    
     res.json({
         token,
         user: {
